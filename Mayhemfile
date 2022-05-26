@@ -1,0 +1,9 @@
+image: ghcr.io/capuanob/epub2txt2-fuzz:latest
+project: epub2txt2
+target: epub2txt-fuzz
+tests:
+  - file://corpus
+
+cmds:
+  - cmd: /epub2txt2/epub2txt @@
+    afl: true

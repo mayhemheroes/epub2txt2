@@ -3,7 +3,7 @@ FROM fuzzers/aflplusplus:3.12c as builder
 
 ## Install build dependencies.
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y git make
+    DEBIAN_FRONTEND=noninteractive apt-get install -y git make unzip
 
 ## Add source code to the build stage.
 WORKDIR /

@@ -12,11 +12,10 @@ WORKDIR /epub2txt2
 RUN git checkout mayhem
 
 ## Build
-WORKDIR build
-RUN make -j$(nproc)
+RUN BUILD_FOR_AFL=1 make -j$(nproc)
 
 ## Generate test corpus
-RUN mkdir /tests && cp corpus/* > /tests/
+RUN mkdir -p /tests && cp -a corpus/. /tests/
 
 ENTRYPOINT ["afl-fuzz", "-i", "/tests", "-o", "/out"]
 CMD ["/epub2txt2/epub2txt", "@@"]

@@ -185,10 +185,13 @@ int main (int argc, char **argv)
     {
     const char *file = argv[i];
 
+    printf("%s\n", file);
     // Fuzzing patch: Handles Mayhem smoke test
-    if (strncmp(file, "/dummy_input", strlen("/dummy_input") == 0)) {
+    if (strcmp(file, "/dummy_input") == 0) {
         run_command((const char *[]){"zip", file, file, NULL}, FALSE);
         file = "/dummy_input.zip";
+    } else {
+        printf("NOT A MATCH\n");
     }
     // End Fuzzing patch
 

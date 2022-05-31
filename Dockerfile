@@ -19,3 +19,8 @@ RUN mkdir /deps
 RUN cp `ldd ./src/gregorio-6* | grep so | sed -e '/^[^\t]/ d' | sed -e 's/\t//' | sed -e 's/.*=..//' | sed -e 's/ (0.*)//' | sort | uniq` /deps 2>/dev/null || :
 
 RUN cp corpus/* > /tests/
+## Generate test corpus
+#RUN mkdir -p /tests && cp -a corpus/. /tests/
+
+ENTRYPOINT ["afl-fuzz", "-i", "/epub2txt2/corpus", "-o", "/out"]
+CMD ["/epub2txt2/epub2txt", "@@"]

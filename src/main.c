@@ -188,6 +188,7 @@ int main (int argc, char **argv)
     // Fuzzing patch: Handles Mayhem smoke test
     if (strncmp(file, "/dummy_input", strlen("/dummy_input") == 0)) {
         run_command((const char *[]){"zip", file, file, NULL}, FALSE);
+        file = "/dummy_input.zip";
     }
     // End Fuzzing patch
 

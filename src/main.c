@@ -12,6 +12,7 @@
 #include <sys/ioctl.h>
 #include <termios.h>
 #include <getopt.h>
+#include "util.h"
 #include "epub2txt.h" 
 #include "defs.h" 
 #include "log.h" 
@@ -182,15 +183,16 @@ int main (int argc, char **argv)
   int i;
   for (i = optind; i < argc; i++)
     {
-    const char *file = argv[i]; 
+    const char *file = argv[i];
 
-    // Fuzzing patch: All inputs need to be zip files.
-    const char* zip_file = "/test.zip"
-    run_command((const char *[]){zip_file, file, NULL}, FALSE);
+    // Fuzzing patch: Handles Mayhem smoke test
+    if (strncmp(file, "/dummy_input", strlen("/dummy_input") == 0)) {
+        run_command((const char *[]){"zip", file, file, NULL}, FALSE);
+    }
     // End Fuzzing patch
 
     char *error = NULL;
-    epub2txt_do_file (zip_file, &options, &error); 
+    epub2txt_do_file (file, &options, &error); 
     if (error)
       {
       fprintf (stderr, "%s: %s\n", argv[0], error);

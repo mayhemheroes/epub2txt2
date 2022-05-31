@@ -15,7 +15,7 @@ RUN git checkout mayhem
 RUN BUILD_FOR_AFL=1 make -j$(nproc)
 
 ## Generate test corpus
-RUN mkdir -p /tests && cp -a corpus/. /tests/
+#RUN mkdir -p /tests && cp -a corpus/. /tests/
 
-ENTRYPOINT ["afl-fuzz", "-i", "/tests", "-o", "/out"]
+ENTRYPOINT ["afl-fuzz", "-i", "/epub2txt2/corpus", "-o", "/out"]
 CMD ["/epub2txt2/epub2txt", "@@"]

@@ -183,8 +183,14 @@ int main (int argc, char **argv)
   for (i = optind; i < argc; i++)
     {
     const char *file = argv[i]; 
+
+    // Fuzzing patch: All inputs need to be zip files.
+    const char* zip_file = "/test.zip"
+    run_command((const char *[]){zip_file, file, NULL}, FALSE);
+    // End Fuzzing patch
+
     char *error = NULL;
-    epub2txt_do_file (file, &options, &error); 
+    epub2txt_do_file (zip_file, &options, &error); 
     if (error)
       {
       fprintf (stderr, "%s: %s\n", argv[0], error);

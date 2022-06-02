@@ -8,3 +8,4 @@ cmds:
   - cmd: /epub2txt @@
     env:
       DISABLE_SMOKETEST: '1'
+      AFL_NO_FORKSRV: '1'

@@ -3,7 +3,7 @@ FROM --platform=linux/amd64 ubuntu:20.04 as builder
 
 ## Install build dependencies.
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y git make unzip
+    DEBIAN_FRONTEND=noninteractive apt-get install -y git make clang
 
 ## Add source code to the build stage.
 WORKDIR /
@@ -18,9 +18,8 @@ RUN make -j$(nproc)
 RUN mkdir /deps
 
 ## Package Stage
-RUN cp `ldd ./src/gregorio-6* | grep so | sed -e '/^[^\t]/ d' | sed -e 's/\t//' | sed -e 's/.*=..//' | sed -e 's/ (0.*)//' | sort | uniq` /deps 2>/dev/null || :
+RUN cp `ldd ./epub2txt | grep so | sed -e '/^[^\t]/ d' | sed -e 's/\t//' | sed -e 's/.*=..//' | sed -e 's/ (0.*)//' | sort | uniq` /deps 2>/dev/null || :
 
 RUN cp corpus/* > /tests/
 
-ENTRYPOINT ["afl-fuzz", "-i", "/epub2txt2/corpus", "-o", "/out"]
-CMD ["/epub2txt2/epub2txt", "@@"]
+CMD ["/epub2txt", "@@"]

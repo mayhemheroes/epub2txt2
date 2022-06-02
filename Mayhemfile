@@ -7,3 +7,5 @@ tests:
 cmds:
   - cmd: /epub2txt2/epub2txt @@
     afl: true
+    env:
+    	DISABLE_SMOKETEST: '1'

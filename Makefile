@@ -1,6 +1,10 @@
 VERSION := 2.05
-CC      := gcc
-CFLAGS  := -Wall -fPIC -fPIE 
+ifdef BUILD_FOR_AFL
+CC      := afl-clang-fast
+else
+CC 		:= gcc
+endif
+CFLAGS  := -Wall -fPIC -fPIE
 #LDFLAGS := -pie -s
 LDFLAGS := -pie 
 DESTDIR :=

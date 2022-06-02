@@ -1,11 +1,10 @@
 image: ghcr.io/capuanob/epub2txt2-fuzz:latest
 project: epub2txt2
 target: epub2txt-fuzz
-tests:
+testsuite:
   - file://corpus
 
 cmds:
-  - cmd: /epub2txt2/epub2txt @@
-    afl: true
+  - cmd: /epub2txt @@
     env:
-    	DISABLE_SMOKETEST: '1'
+      DISABLE_SMOKETEST: '1'

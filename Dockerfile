@@ -19,10 +19,5 @@ RUN apt-get update && \
 COPY --from=builder /epub2txt2/epub2txt /epub2txt
 COPY --from=builder /epub2txt2/corpus /tests
 
-<<<<<<< HEAD
-RUN cp corpus/* > /tests/
-## Generate test corpus
-#RUN mkdir -p /tests && cp -a corpus/. /tests/
-
 ENTRYPOINT ["afl-fuzz", "-i", "/tests", "-o", "/out"]
 CMD ["/epub2txt", "@@"]

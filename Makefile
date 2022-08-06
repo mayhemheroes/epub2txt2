@@ -1,4 +1,4 @@
-VERSION := 2.05
+VERSION := 2.06
 ifdef BUILD_FOR_AFL
 CC      := afl-clang-fast
 else

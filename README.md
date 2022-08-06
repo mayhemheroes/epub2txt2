@@ -1,6 +1,6 @@
 # epub2txt -- Extract text from EPUB documents  
 
-Version 2.05, May 2022 
+Version 2.06, June 2022 
 
 ## What is this? 
 
@@ -244,6 +244,8 @@ covered.
 
 Date | Change
 -----|-------
+?,&nbsp;Jun&nbsp;2022 | Fixed handling of URL-encoded spine href's 
+2.06,&nbsp;Jun&nbsp;2022 | Fixed bug in invoking unzip 
 2.05,&nbsp;Apr&nbsp;2022 | Fixed bug with empty metadata tags 
 2.04,&nbsp;Apr&nbsp;2022 | Improved handling of UTF-8 BOMs 
 2.03,&nbsp;Jan&nbsp;2022 | Fixed a buffer overrun bug 
@@ -259,8 +261,8 @@ Date | Change
 
 ## Author and legal 
 
-`epub2txt` is maintained by Kevin Boone, and distributed under the terms
-of the GNU Public Licence, v3.0. Essentially, this means that you may 
-use this software as you wish, at your own risk, provided that the 
-original author continues to be acknowledged.
+`epub2txt` is maintained by Kevin Boone, with contributions from various other
+people, and distributed under the terms of the GNU Public Licence, v3.0.
+Essentially, this means that you may use this software as you wish, at your
+own risk, provided that the original authors continue to be acknowledged.
 

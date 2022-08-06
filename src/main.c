@@ -12,7 +12,6 @@
 #include <sys/ioctl.h>
 #include <termios.h>
 #include <getopt.h>
-#include "util.h"
 #include "epub2txt.h" 
 #include "defs.h" 
 #include "log.h" 
@@ -183,8 +182,7 @@ int main (int argc, char **argv)
   int i;
   for (i = optind; i < argc; i++)
     {
-    const char *file = argv[i];
-
+    const char *file = argv[i]; 
     char *error = NULL;
     epub2txt_do_file (file, &options, &error); 
     if (error)

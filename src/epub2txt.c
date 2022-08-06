@@ -436,7 +436,7 @@ void epub2txt_do_file (const char *file, const Epub2TxtOptions *options,
 
     log_debug ("Running unzip command");
     run_command ((const char *[]){"unzip", "-o", "-qq", file, "-d", tempdir,
-      NULL}, FALSE);
+      NULL}, TRUE);
     // We could set unzip_ok here, but I'm not sure that unzip really
     //  returns a reliable status code
 

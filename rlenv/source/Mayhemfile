@@ -1,0 +1,11 @@
+project: mayhemheroes/epub2txt2
+target: epub2txt-fuzz
+testsuite:
+  - https://app.mayhem.security/mayhemheroes/epub2txt2/epub2txt-fuzz/uploaded/9bc64aff21c37b053e2e0614a8809ccaa8f6451492bb66b544168ef99974a639/testsuite.tgz
+cmds:
+  - cmd: /epub2txt @@
+    env:
+      DISABLE_SMOKETEST: '1'
+      AFL_NO_FORKSRV: '1'
+image: ghcr.io/mayhemheroes/epub2txt2@sha256:910df136fcaa81728d5597a4c7e5c4fe3072d83809ace51346f0e57f46d74155
+duration: 300

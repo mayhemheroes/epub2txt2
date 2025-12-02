@@ -1,0 +1,109 @@
+# ============================================================================
+# RLENV Patch Playground - Single-Stage Dockerfile
+# ============================================================================
+# Project: epub2txt2
+# Original image: ghcr.io/mayhemheroes/epub2txt2:master
+# Git revision: 5890b9b89670524c4ca906866475d6cec0f9556d
+# Target executable: /epub2txt
+# ============================================================================
+
+# ============================================================================
+# 1. Base Image Selection
+# ============================================================================
+FROM fuzzers/aflplusplus:3.12c
+
+# ============================================================================
+# 2. System Dependencies (merge ALL stages from original Dockerfile)
+# ============================================================================
+RUN apt-get update && apt-get install -y \
+    make \
+    unzip \
+    zip \
+    jq \
+    && rm -rf /var/lib/apt/lists/*
+
+# jq is required by validate.sh to parse metadata.json
+
+# ============================================================================
+# 3. Copy MTV Binary (REQUIRED - used by validate.sh)
+# ============================================================================
+COPY --from="us-east4-docker.pkg.dev/forallsecure-1/rlenv-staging/rlenv-mcp-static:latest" \
+     /rlenv/bin/mtv /rlenv/bin/mtv
+
+# MTV (Mayhem Test & Verify) is required for validation and crash triage
+
+# ============================================================================
+# 4. Language-Specific Setup
+# ============================================================================
+# AFL++ environment is already configured in the base image
+# The working directory from metadata.json is /AFLplusplus
+
+# ============================================================================
+# 5. Copy Source Code (EARLY - source exists now)
+# ============================================================================
+COPY . /rlenv/source/epub2txt2/
+
+# ============================================================================
+# 6. Make Source World-Writable (REQUIRED for non-root rebuilds)
+# ============================================================================
+RUN chmod -R 777 /rlenv/source
+
+# Why 777? Validation runs as UID 1000 (unprivileged user)
+# Must be able to modify source code and rebuild
+
+# ============================================================================
+# 7. Set Working Directory
+# ============================================================================
+WORKDIR /rlenv/source/epub2txt2/
+
+# ============================================================================
+# 8. Install Language Dependencies
+# ============================================================================
+# No additional language dependencies needed - using system C compiler
+
+# ============================================================================
+# 9. Build Application
+# ============================================================================
+RUN make -j$(nproc) BUILD_FOR_AFL=1
+
+# ============================================================================
+# 10. Copy Artifacts to Expected Locations
+# ============================================================================
+RUN cp epub2txt /epub2txt
+
+# ============================================================================
+# 11. Permission Management (REQUIRED)
+# ============================================================================
+# Target executable (rwxrwxrwx - needs to be writable by unprivileged user)
+RUN chmod 777 /epub2txt
+
+# AFL++ output directory
+RUN chmod -R 777 /out 2>/dev/null || true
+
+# Cache directories
+RUN chmod -R 777 /root/.cache 2>/dev/null || true
+
+# ============================================================================
+# 12. Copy rlenv Directory (MUST BE NEAR END - doesn't exist yet!)
+# ============================================================================
+COPY rlenv /rlenv
+
+# CRITICAL: This directory doesn't exist when you create this Dockerfile
+# It's populated later by the `rlenv patch` command
+
+# ============================================================================
+# 13. Final Permission Fix (REQUIRED)
+# ============================================================================
+RUN chmod -R 777 /rlenv/source
+
+# Ensures source remains writable after rlenv directory copy
+
+# ============================================================================
+# 14. Set Entry Point
+# ============================================================================
+CMD ["/epub2txt"]
+
+# ============================================================================
+# 15. Reset Working Directory
+# ============================================================================
+WORKDIR /

@@ -1,0 +1,13 @@
+{
+  "workspace": "mayhemheroes",
+  "project": "epub2txt2",
+  "target": "epub2txt-fuzz",
+  "run_id": "3",
+  "ci_url": "https://github.com:443/mayhemheroes/epub2txt2/actions/runs/2884437224",
+  "run_image_name": "ghcr.io/mayhemheroes/epub2txt2:master",
+  "run_image_with_digest": "ghcr.io/mayhemheroes/epub2txt2@sha256:910df136fcaa81728d5597a4c7e5c4fe3072d83809ace51346f0e57f46d74155",
+  "git_repo_url": "git@github.com:mayhemheroes/epub2txt2.git",
+  "git_revision": "5890b9b89670524c4ca906866475d6cec0f9556d",
+  "target_executable": "/epub2txt",
+  "working_dir": "/AFLplusplus"
+}

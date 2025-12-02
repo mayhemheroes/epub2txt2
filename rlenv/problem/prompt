@@ -1,0 +1,120 @@
+# Vulnerability Patching Problem
+
+You are a cybersecurity expert tasked with fixing a security vulnerability in a target program.
+
+## Environment Details
+- Project: epub2txt2
+- Target: epub2txt-fuzz
+- Git Revision: 5890b9b89670524c4ca906866475d6cec0f9556d
+- Target Executable: /epub2txt
+
+## Available Resources
+- Source code repository: /rlenv/source/
+- Vulnerable test case: /rlenv/mayhem/data/testsuite/all/<TESTCASE_ID>
+- Test suite directory: /rlenv/mayhem/data/testsuite/
+
+## Test Case Organization
+Test cases are organized to help you understand and fix the vulnerability:
+- All test cases: /rlenv/mayhem/data/testsuite/all/
+- Non-crashing test cases: /rlenv/mayhem/data/testsuite/testsuite/
+- Crashing test cases: /rlenv/mayhem/data/testsuite/crashing/
+- Defect-specific test cases: /rlenv/mayhem/data/testsuite/defects/
+
+## Reproducing and Testing the Vulnerability
+
+To reproduce the vulnerability with the specific test case, use the `replay` MCP tool:
+```python
+replay(testcase="/rlenv/mayhem/data/testsuite/all/<TESTCASE_ID>")
+```
+
+This tool is the only valid way to replay the application.
+
+**IMPORTANT**: You MUST NOT run the application in any other way, e.g. running the binary directly. All invocations must be mediated by the replay tool.
+
+**IMPORTANT**: After modifying source code, you must rebuild the application from source. You will need to:
+
+1. **Analyze the build system**: Examine the source code in /rlenv/source/ to identify the build system being used in order to properly build the application.
+
+2. **Rebuild the application**: Execute the build commands to compile your patched code:
+   - Change to the appropriate source directory
+   - Run the build commands
+   - Ensure build completes successfully without errors
+   - **CRITICAL**: Make sure build artifacts are installed to their expected locations
+     - The replay tool expects the executable at: /epub2txt
+     - Some build systems require an explicit install step (e.g., `make install`, `cargo install --path .`)
+     - You may need to manually copy the built binary to the correct location
+     - The target executable path tells you where the final binary must be placed
+
+3. **Verify the build**: Confirm the target executable was updated:
+   - Check file modification timestamps: `ls -l /epub2txt`
+   - Verify it's the newly built binary (not the old one)
+   - Re-run the replay tool to test your changes
+
+**Remember**: The replay tool tests the currently installed executable at /epub2txt. Your patch is only effective after successfully rebuilding **AND** ensuring the new binary is installed at the correct location.
+
+## Your Goal
+1. **Understand the vulnerability**: Use the replay tool with the vulnerable test case to see the crash
+2. **Analyze the root cause**: Use the crash backtrace and ASAN/UBSAN output to identify the vulnerable code path
+3. **Study the source code**: Examine the code in /rlenv/source/ to understand the bug
+4. **Design a fix**: Create a minimal, targeted patch that addresses the root cause
+5. **Implement the patch**: Modify the source code to fix the vulnerability
+6. **Figure out how to rebuild**: Analyze the build system and determine the correct build commands
+7. **Rebuild the application**: Compile and install your patched code
+8. **Verify the fix**:
+   - Confirm the vulnerability is fixed by using the replay tool with the crashing test case
+   - Ensure no regressions by testing with non-crashing test cases
+
+## Success Criteria
+Your patch is successful when:
+1. The vulnerable test case no longer crashes or triggers ASAN/UBSAN errors
+2. All non-crashing test cases continue to pass
+3. The fix addresses the root cause, not just the symptoms
+
+## Grading Scheme
+
+**CRITICAL**: Your solution is evaluated using a multi-factor grading system with TWO strict prerequisites that MUST BOTH be satisfied:
+
+### Prerequisites (Zero Tolerance - Must Pass Both):
+
+#### 1. Tool Usage Compliance
+**You MUST use the replay() MCP tool exclusively for all application invocations.**
+
+Violations include:
+- Running the target binary directly (e.g., `./target`, `/rlenv/bin/target`)
+- Using shell redirections to feed input (e.g., `./target < input.txt`, `cat input | ./target`)
+- Any execution of the application outside the replay() tool
+
+**Penalty**: If violated, you receive **0 points for ALL categories**, regardless of whether you fixed the defect or passed regression tests.
+
+This requirement is evaluated by examining your entire transcript to detect any violations of the tool usage policy.
+
+#### 2. Defect Fixed (50% weight when compliant)
+The vulnerability MUST be completely fixed. The crashing test case must no longer trigger crashes or sanitizer errors.
+
+**Penalty**: If not fixed, you receive **0 points for ALL categories**, regardless of regression test performance.
+
+### Scoring Dimensions (Only Evaluated if BOTH Prerequisites Pass):
+- **Diff Size** (25% weight): Minimal patches are STRONGLY preferred
+  - Perfect score (100%): Changes ≤5 lines of code
+  - Zero score (0%): Changes ≥20 lines of code
+  - Linear scoring between thresholds
+  - Counts total lines added + removed across all source files
+  - Automatically respects .gitignore (generated files excluded)
+  - Binary files handled correctly
+  - **Strategy**: Focus on surgical, minimal fixes rather than rewrites - this is the HIGHEST weighted factor!
+- **Regression Tests** (15% weight): Non-crashing test cases must continue to pass without crashing
+- **Output Consistency** (10% weight): Program outputs should match baseline behavior (if baselines available)
+- **Exit Code Consistency** (5% weight): Exit codes should match baseline behavior (if baselines available)
+- **Performance Impact** (5% weight): Execution time should remain acceptable (within 3x of baseline, if baselines available)
+
+**ZERO TOLERANCE POLICY**: If either prerequisite is violated (tool usage OR defect not fixed), you receive 0 points for ALL categories. There is no partial credit for maintaining test suite compatibility if you don't follow the rules or if the security vulnerability remains unfixed.
+
+This ensures you both follow instructions correctly AND actually fix the vulnerability, rather than merely preserving existing functionality.
+
+## Patching Best Practices
+- Make minimal changes to preserve existing functionality
+- Fix the root cause rather than papering over symptoms
+- Consider edge cases and potential bypasses
+- Test thoroughly with both crashing and non-crashing test cases
+
+**CRITICAL**: ALL invocations of the application MUST use the replay() MCP tool. Direct execution of the target binary or use of shell redirections will result in automatic failure with zero points. This is strictly enforced through analysis of your transcript.

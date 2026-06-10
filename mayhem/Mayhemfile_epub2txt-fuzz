@@ -1,0 +1,13 @@
+project: epub2txt2
+target: epub2txt-fuzz
+# In-process libFuzzer target. epub2txt's CLI shells out to `unzip` (only the child reads the
+# input), so the old `epub2txt @@` file-input target never read what Mayhem monitored. This target
+# instead feeds the fuzz bytes DIRECTLY to epub2txt2's in-process parsers — the XHTML state machine
+# (src/xhtml.c, xhtml_file_to_stdout) and the sxmlc DOM parser (src/sxmlc.c,
+# XMLDoc_parse_buffer_DOM) — skipping the zip/unzip layer entirely. Built by mayhem/build.sh.
+# Seeds = minimal valid XHTML + OPF documents baked at /mayhem/seeds.
+testsuite:
+  - file:///mayhem/seeds
+cmds:
+  - cmd: /mayhem/epub2txt-fuzz
+    libfuzzer: true

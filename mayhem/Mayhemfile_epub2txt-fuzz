@@ -1,0 +1,5 @@
+project: epub2txt2
+target: epub2txt-fuzz
+cmds:
+  - cmd: /mayhem/epub2txt-fuzz
+    libfuzzer: true
